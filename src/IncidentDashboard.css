@@ -428,3 +428,8 @@ footer {
     stroke-dashoffset: 0;
   }
 }
+
+.error-insights {
+  grid-area: analysis;
+  margin-top: 1rem;
+}
