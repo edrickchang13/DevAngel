@@ -6,6 +6,7 @@
   color: #1f2937;
   display: flex;
   flex-direction: column;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* ===== Header ===== */
@@ -56,7 +57,7 @@
   background: #1a252f;
 }
 
-/* ===== Grid Layout ===== */
+/* ===== Grid Layout (Filled, No Gaps) ===== */
 .dashboard-grid {
   display: grid;
   grid-template-areas:
@@ -64,27 +65,52 @@
     "timeline metrics analysis";
   grid-template-columns: 1.3fr 1fr 1fr;
   grid-template-rows: auto 1fr;
-  gap: 2rem;
-  padding: 2rem 4rem;
+  gap: 1.5rem;
+  padding: 2rem 3rem 5rem;
   flex-grow: 1;
-  align-items: start;
+  align-items: stretch;
 }
 
-/* ===== Chart Section (NO SCROLL) ===== */
+/* ===== Unified Card Design ===== */
+.card {
+  background: #ffffff;
+  padding: 1.5rem 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+}
+
+/* ===== Section Assignments ===== */
 .chart-section {
   grid-area: chart;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 500px;
-  overflow: hidden;
 }
 
-.chart-section h2 {
-  margin-bottom: 1rem;
-  font-size: 1.25rem;
-  font-weight: 600;
+.service-health {
+  grid-area: health;
+}
+
+.analysis-summary {
+  grid-area: analysis;
+}
+
+.incident-timeline {
+  grid-area: timeline;
+}
+
+.real-time-metrics {
+  grid-area: metrics;
 }
 
 /* ===== Scrollable Cards ===== */
@@ -92,7 +118,7 @@
 .real-time-metrics,
 .incident-timeline,
 .analysis-summary {
-  max-height: 350px;
+  max-height: 420px;
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: #6b7280 transparent;
@@ -121,10 +147,6 @@
 }
 
 /* ===== Table: File Impact ===== */
-.service-health {
-  grid-area: health;
-}
-
 .service-health table {
   width: 100%;
   border-collapse: collapse;
@@ -133,7 +155,7 @@
 
 .service-health th,
 .service-health td {
-  padding: 0.5rem;
+  padding: 0.6rem;
   border-bottom: 1px solid #e5e7eb;
   text-align: left;
 }
@@ -142,9 +164,8 @@
   background-color: #f3f4f6;
 }
 
-/* ===== Top Errors ===== */
+/* ===== Error Timeline ===== */
 .incident-timeline {
-  grid-area: timeline;
   font-size: 0.875rem;
   line-height: 1.4;
 }
@@ -156,10 +177,6 @@
 }
 
 /* ===== Deployment Info ===== */
-.real-time-metrics {
-  grid-area: metrics;
-}
-
 .real-time-metrics ul {
   list-style: none;
   padding: 0;
@@ -169,32 +186,15 @@
 }
 
 /* ===== Summary ===== */
-.analysis-summary {
-  grid-area: analysis;
-}
-
 .analysis-summary h2 {
   margin-bottom: 0.5rem;
+  font-size: 1.25rem;
 }
 
 .analysis-summary p {
   line-height: 1.6;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   color: #374151;
-}
-
-/* ===== Card Design ===== */
-.card {
-  background: #ffffff;
-  padding: 1.5rem 2rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
 }
 
 /* ===== Footer ===== */
@@ -241,14 +241,14 @@ footer button:hover {
   box-shadow: 0 6px 14px rgba(127, 29, 29, 0.6);
 }
 
-/* ===== Responsive ===== */
+/* ===== Responsive Layout ===== */
 @media (max-width: 1200px) {
   .dashboard-grid {
     grid-template-areas:
       "chart analysis"
       "health analysis"
       "timeline metrics";
-    grid-template-columns: 1.4fr 1fr;
+    grid-template-columns: 1.3fr 1fr;
   }
 }
 
@@ -263,12 +263,6 @@ footer button:hover {
     grid-template-columns: 1fr;
     padding: 1.5rem;
   }
-}
-
-/* ===== Light Mode ===== */
-.dashboard.light {
-  background: #f9fafb;
-  color: #1f2937;
 }
 
 /* ===== Dark Mode ===== */
@@ -325,7 +319,7 @@ footer button:hover {
   color: #3b82f6;
 }
 
-/* ===== Global Background Fix ===== */
+/* ===== Global Background ===== */
 html,
 body {
   margin: 0;
@@ -336,4 +330,101 @@ body {
 pre {
   color: inherit;
   font-family: monospace;
+}
+
+/* ===== Responsive Enhancements ===== */
+.card {
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+@media (max-width: 480px) {
+  .dashboard-header h1 {
+    font-size: 1.2rem;
+  }
+
+  .header-controls {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  footer {
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.75rem;
+  }
+}
+
+/* ===== Smooth Theme Transition ===== */
+.dashboard,
+.card,
+.dashboard-header,
+footer {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.error-insights {
+  grid-column: span 1;
+  font-size: 0.9rem;
+}
+
+.error-insights li {
+  padding: 0.35rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.error-insights li:last-child {
+  border-bottom: none;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 20;
+}
+
+.modal {
+  background: #1f2937;
+  padding: 2rem;
+  border-radius: 12px;
+  color: white;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 1.5rem;
+}
+
+.modal-actions button {
+  background: #b91c1c;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.modal-actions button:hover {
+  background: #dc2626;
+}
+
+@keyframes drawLine {
+  from {
+    stroke-dashoffset: 1000;
+  }
+
+  to {
+    stroke-dashoffset: 0;
+  }
 }
