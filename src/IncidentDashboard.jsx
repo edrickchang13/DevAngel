@@ -194,7 +194,7 @@ const IncidentDashboard = ({ incident: incidentProp }) => {
   return (
     <div className={`dashboard ${theme}`}>
       <header className="dashboard-header">
-        <h1>AWS Incident Response</h1>
+        <h1>DevAngel</h1>
         <div className="header-controls">
           <span className="status">
             <span
