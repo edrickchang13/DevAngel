@@ -70,46 +70,119 @@ const IncidentDashboard = ({ incident: incidentProp }) => {
   const status = incident?.status?.toLowerCase() || 'unknown';
 
   const renderChart = () => {
-    if (!errorData.length) return <p>No chart data.</p>;
+  if (!errorData.length) return <p>No chart data.</p>;
 
-    const width = 600, height = 240, padding = 50;
-    const maxVal = Math.max(...errorData.map(d => d[1]));
+  const width = 600;
+  const height = 240;
+  const padding = 50;
+  const maxVal = Math.max(...errorData.map(d => d[1])) || 1;
 
-    const points = errorData.map((d, i) => ({
-      label: d[0],
-      x: padding + (i / (errorData.length - 1)) * (width - 2 * padding),
-      y: height - padding - (d[1] / maxVal) * (height - 2 * padding),
-      value: d[1]
-    }));
+  const points = errorData.map((d, i) => ({
+    label: d[0],
+    x: padding + (i / (errorData.length - 1)) * (width - 2 * padding),
+    y: height - padding - (d[1] / maxVal) * (height - 2 * padding),
+    value: d[1]
+  }));
 
-    const path = points.map((p, i) =>
-      `${i === 0 ? 'M' : 'L'}${p.x},${p.y}`
-    ).join(' ');
+  const path = points.map((p, i) =>
+    `${i === 0 ? 'M' : 'L'}${p.x},${p.y}`
+  ).join(' ');
 
-    return (
-      <svg viewBox={`0 0 ${width} ${height}`} width="100%" height="240">
-        <line x1={padding} y1={height - padding} x2={width - padding} y2={height - padding} stroke="#9ca3af" strokeWidth="1" />
-        <line x1={padding} y1={padding} x2={padding} y2={height - padding} stroke="#9ca3af" strokeWidth="1" />
+  return (
+    <svg viewBox={`0 0 ${width} ${height}`} width="100%" height="260">
+      {/* Gridlines */}
+      {Array.from({ length: 5 }).map((_, i) => {
+        const y = padding + (i / 4) * (height - 2 * padding);
+        return (
+          <line
+            key={i}
+            x1={padding}
+            y1={y}
+            x2={width - padding}
+            y2={y}
+            stroke={theme === 'dark' ? '#2d3748' : '#e5e7eb'}
+            strokeWidth="0.5"
+          />
+        );
+      })}
 
-        <path d={path} fill="none" stroke="#ff9900" strokeWidth="3"
-          style={{ strokeDasharray: 1000, animation: 'drawLine 1.5s ease-in-out' }}
-        />
+      {/* X and Y axes */}
+      <line
+        x1={padding}
+        y1={height - padding}
+        x2={width - padding}
+        y2={height - padding}
+        stroke={theme === 'dark' ? '#9ca3af' : '#6b7280'}
+        strokeWidth="1"
+      />
+      <line
+        x1={padding}
+        y1={padding}
+        x2={padding}
+        y2={height - padding}
+        stroke={theme === 'dark' ? '#9ca3af' : '#6b7280'}
+        strokeWidth="1"
+      />
 
-        {points.map((p, i) => (
-          <circle key={i} cx={p.x} cy={p.y} r="5" fill="#ff9900"
-            onMouseEnter={() => setTooltip({ x: p.x, y: p.y, label: p.label, value: p.value })}
-            onMouseLeave={() => setTooltip(null)} />
-        ))}
+      {/* Data line */}
+      <path d={path} fill="none" stroke="#ff9900" strokeWidth="3" />
 
-        {tooltip && (
-          <text x={tooltip.x} y={tooltip.y - 15} fontSize="11" textAnchor="middle"
-            fill={theme === 'dark' ? '#fff' : '#000'}>
-            {`${tooltip.label}: ${tooltip.value}`}
-          </text>
-        )}
-      </svg>
-    );
-  };
+      {/* Points */}
+      {points.map((p, i) => (
+        <circle key={i} cx={p.x} cy={p.y} r="4" fill="#ff9900" />
+      ))}
+
+      {/* X-axis labels */}
+      {points.map((p, i) => (
+        <text
+          key={`x-${i}`}
+          x={p.x}
+          y={height - padding + 20}
+          fontSize="10"
+          textAnchor="middle"
+          fill={theme === 'dark' ? '#f9fafb' : '#374151'}
+        >
+          {p.label.split(' ')[1]}
+        </text>
+      ))}
+
+      {/* Y-axis labels */}
+      {[0, ...Array.from({ length: 4 }, (_, i) => Math.round(maxVal * ((i + 1) / 4)))].map((val, i) => (
+        <text
+          key={`y-${i}`}
+          x={padding - 30}
+          y={height - padding - (val / maxVal) * (height - 2 * padding)}
+          fontSize="10"
+          textAnchor="end"
+          fill={theme === 'dark' ? '#f9fafb' : '#6b7280'}
+        >
+          {val}
+        </text>
+      ))}
+
+      {/* Axis titles */}
+      <text
+        x={width / 2}
+        y={height - 10}
+        textAnchor="middle"
+        fontSize="12"
+        fill={theme === 'dark' ? '#f9fafb' : '#374151'}
+      >
+        Time (HH:MM)
+      </text>
+      <text
+        x="15"
+        y={height / 2}
+        textAnchor="middle"
+        fontSize="12"
+        fill={theme === 'dark' ? '#f9fafb' : '#374151'}
+        transform={`rotate(-90, 15, ${height / 2})`}
+      >
+        Error Count
+      </text>
+    </svg>
+  );
+};
 
   const getStatusColor = () => {
     if (status.includes('healthy') || status.includes('ok')) return '#10b981';
